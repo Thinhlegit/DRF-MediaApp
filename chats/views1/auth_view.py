@@ -19,7 +19,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from chats.authentication import BearerAuthentication
-from chats.serializers import RegistrationSerializer, UsersWithMessageSerializer, UserSerializer
+from chats.serializers import RegistrationSerializer, UsersWithMessageSerializer, UserSerializer, UpdateUserSerializer
 
 
 class Login(ObtainAuthToken):
@@ -151,3 +151,41 @@ class ChangePasswordView(generics.UpdateAPIView):
 #         # to:
 #         [reset_password_token.user.email]
 #     )
+#Profile
+
+from rest_framework import viewsets, permissions
+from chats.serializers import UserSerializer
+class LeadViewset(viewsets.ModelViewSet):
+    serializer_class = UserSerializer
+    authentication_classes = [SessionAuthentication, BasicAuthentication, BearerAuthentication]
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+    def get_queryset(self):
+        return self.request.user.profile.all()
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    # def get_queryset(self):
+    #     a=User.objects.filter(username=self.request.user.username).first()
+    #     return self.request.profile.objects.get(user)
+    # serialize_user = UserSerializer(user, many=False)
+    # user = serializer.validate(user)
+    # def perform_create(self, serializer):
+    #     serializer.save(user=self.request.user)
+
+    # def get_queryset(self):
+    #     users = User.objects.exclude(pk=self.request.user.pk).order_by('-profile__online').all()
+    #     return users
+    #     print(a)
+    #     return Profile.objects.filter(user=a).update(online=status)
+
+class UpdateProfileView(generics.UpdateAPIView):
+    model = User
+
+    def get_queryset(self):
+        return self.request.user.profile.objects.all()
+    
+    authentication_classes = [SessionAuthentication, BasicAuthentication, BearerAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = UpdateUserSerializer

@@ -79,7 +79,6 @@ class UsersWithMessageSerializer(serializers.ModelSerializer):
         serializer = MessageModelSerializer(messages.order_by('date_time'), many=True)
         return serializer.data
 
-
 class UserSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     photo = serializers.ImageField(source='profile.photo')
@@ -100,6 +99,60 @@ class UserSerializer(serializers.ModelSerializer):
         return []
 
 
+
+# class UserSerializer(serializers.ModelSerializer):
+
+#     name = serializers.SerializerMethodField()
+#     online = serializers.BooleanField(source='profile.online')
+#     status = serializers.CharField(source='profile.status')
+#     gender = serializers.CharField(source='profile.gender')
+#     relationship = serializers.CharField(source='profile.relationship')
+#     location = serializers.CharField(source='profile.location')
+#     detaillocation = serializers.CharField(source='profile.detaillocation')
+#     phone_number = serializers.CharField(source='profile.phone_number')
+    
+#     class Meta:
+#         model = User
+#         fields = ('name', 'username','online', 'status', 'gender','relationship','location','detaillocation','phone_number')
+
+class UpdateUserSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ('name', 'status', 'gender','relationship','location','detaillocation','phone_number')
+        # extra_kwargs = {
+        #     'first_name': {'required': True},
+        #     'last_name': {'required': True},
+        # }
+
+    # def validate_email(self, value):
+    #     user = self.context['request'].user
+    #     if User.objects.exclude(pk=user.pk).filter(email=value).exists():
+    #         raise serializers.ValidationError({"email": "This email is already in use."})
+    #     return value
+
+    # def validate_username(self, value):
+    #     user = self.context['request'].user
+    #     if User.objects.exclude(pk=user.pk).filter(username=value).exists():
+    #         raise serializers.ValidationError({"username": "This name is already in use."})
+    #     return value
+
+    def update(self, instance, validated_data):
+        # instance.first_name = validated_data['first_name']
+        # instance.last_name = validated_data['last_name']
+        # instance.email = validated_data['email']
+        instance.name = validated_data['name']
+        instance.name = validated_data['status']
+        instance.name = validated_data['gender']
+        instance.name = validated_data['relationship']
+        instance.name = validated_data['detaillocation']
+        instance.name = validated_data['location']
+        instance.name = validated_data['phone_number']
+        instance.save()
+
+        return instance
+        
 class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User

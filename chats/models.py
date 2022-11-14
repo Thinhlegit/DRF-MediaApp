@@ -11,6 +11,13 @@ class Profile(models.Model):
     photo = models.ImageField(null=True, blank=True, default='girl.svg')
     status = models.CharField(default="Hi i'm using dj chat", max_length=255)
     online = models.BooleanField(default=False)
+    gender = models.CharField(max_length=10)
+    relationship = models.CharField(max_length=50)
+    description = models.CharField(max_length=500)
+    location = models.CharField(max_length=500)
+    detaillocation = models.CharField(max_length=500)
+    phone_number = models.CharField(max_length=10)
+    # date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.user.username
